@@ -1,0 +1,29 @@
+{
+  "teams": 2,
+  "size": [2,2],
+  "offset": [0,0],
+  "cells": [
+    {
+      "terrain": "Plain",
+      "unit": {
+        "team": 0,
+        "type": "Infantry"
+      }
+    },
+    {
+      "terrain": "Plain",
+      "unit": null
+    },
+    {
+      "terrain": "Plain",
+      "unit": null
+    },
+    {
+      "terrain": "Plain",
+      "unit": {
+        "team": 1,
+        "type": "Infantry"
+      }
+    }
+  ]
+}

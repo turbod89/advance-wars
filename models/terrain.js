@@ -1,7 +1,8 @@
 const EntityFactory = require('./entityFactory');
 
-const name = 'Unit';
-const attr = ['name', 'type' ,'cost','move','vision','fuel','ammo','range','damage','environment'];
+const name = 'Terrain';
+const attr = ['name', 'type' , 'cost', 'defense', 'visibility'];
+
 
 EntityFactory.create(name,attr, function () {
 

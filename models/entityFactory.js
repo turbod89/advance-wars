@@ -45,10 +45,10 @@ const factory = function () {
                                 };
 
                                 return o;
-                            },{})
+                            }, {})
                         );
 
-                        constructor.apply(this,arguments);
+                        constructor.apply(this, arguments);
 
                     };
 
