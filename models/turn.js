@@ -1,3 +1,5 @@
+const Map = require('./map');
+
 /**
  *  Creates a game copy with game's info
  *  filtered to info that player can know.
@@ -13,6 +15,25 @@ const Turn = function (game) {
     const dealer = game.players[ game.turn % game.players.length];
     const unitsWichHaveBeenAlreadyMoved = [];
 
+    const filteredCells = game.map.cells.map( (cell,i) => {
+        const x = game.map.getCellCoordinates(cell);
+        const newCell = {
+            terrain: cell.terrain,
+        };
+
+        if (cell.unit && cell.unit.owner === cell.unit.owner) {
+            newCell.unit = cell.unit;
+        }
+
+        return newCell;
+    });
+
+    const map = new Map({
+        offset: game.map.offset,
+        size: game.map.size,
+        cells: filteredCells,
+    });
+
     Object.defineProperties(this, {
         'dealer': {
             'enumerable': true,
@@ -23,7 +44,13 @@ const Turn = function (game) {
         'round': {
             'enumerable': true,
             'configurable': false,
-            'get': () => Math.floor(game.turn/game.players.length),
+            'get': () => Math.floor( game.turn / game.players.length ),
+        },
+
+        'map': {
+            'enumerable': true,
+            'configurable': false,
+            'get': () => map,
         },
 
         'moveTo': {

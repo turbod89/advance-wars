@@ -10,7 +10,11 @@ const rl = readline.createInterface({
 const { Unit, Terrain, Game, Map, Player} = require('../models');
 const mapData = require('../data/map1');
 
-const map = new Map({...mapData,terrains: Terrain.types, units: Unit.types});
+const map = new Map(mapData);
+map.build({
+    terrains: Terrain.types,
+    units: Unit.types,
+});
 
 const players = (new Array(mapData.teams)).fill(null).map( (e,i) => {
 
@@ -40,16 +44,49 @@ const players = (new Array(mapData.teams)).fill(null).map( (e,i) => {
                         rl.pause();
                         resolve();
 
+                    } else if (isCmd(words[0],['map', 'cells'])) {
+
+                        if ( words.length < 2) {
+                            console.log(turn.map);
+                        } else if (isCmd(words[1],['print'])) {
+
+                            let s = '';
+
+                            for (let i = 0; i < turn.map.size[0]; i++) {
+                                for (let j = 0; j < turn.map.size[1]; j++) {
+
+                                    const cell = turn.map.getCell(i,j);
+
+                                    if (cell.unit) {
+                                        s += '!';
+                                    } else {
+                                        s += '.';
+                                    }
+                                }
+                                s +='\n';
+                            }
+
+                            console.log('\n'+s+'\n');
+
+                        } else if (isCmd(words[1],['log'])) {
+                            console.log(turn.map);
+                        } else if (true) {
+                            console.log(turn.map);
+                        }
+
                     } else if (isCmd(words[0],['help'])) {
                         console.log(`
     Avaliable commands:
     
-    - end
-    - help
+    -> end
+    -> help
+    -> map
+        -> print
+        -> log
 
 `);
                     } else if (true) {
-                        console.error(`Unknow command '${words[0]}'. Type 'help' for help.`);
+                        console.error(`Unknown command '${words[0]}'. Type 'help' for help.`);
                     } else { }
 
                     rl.prompt();

@@ -76,7 +76,7 @@ const Game = function () {
             const player = this.players[cell.unit.team];
             const Type = cell.unit.type;
             cell.unit = new Type();
-            cell.owner = player;
+            cell.unit.owner = player;
             units.push(cell.unit);
         }
     });
@@ -88,6 +88,16 @@ Object.defineProperties(Game.prototype,{
         'configurable': false,
         'get': function () {
             return this.status === 'FINISHED';
+        },
+    },
+
+    'getUnitCell': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit) {
+            const index = this.cells.findIndex(cell => cell.unit === unit);
+            return index < 0 ? null : index;
         },
     },
 });
