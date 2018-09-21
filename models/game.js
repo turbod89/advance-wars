@@ -1,9 +1,17 @@
+const Turn = require('./turn');
+
 const Game = function () {
 
     const args = Array.prototype.slice.call(arguments);
     const $a = args[0] || {};
 
+    const max_turns = 10;
+
     const units = [];
+    let turn_cnt = null;
+    let status = 'CREATED';
+
+
 
 
     Object.defineProperties(this,{
@@ -25,6 +33,38 @@ const Game = function () {
             'writable': false,
             'value': $a['map'] || null
         },
+        'turn': {
+            'enumerable': true,
+            'configurable': false,
+            'get': () => turn_cnt,
+        },
+        'status': {
+            'enumerable': true,
+            'configurable': false,
+            'get': () => status,
+        },
+        'start': {
+            'enumerable': true,
+            'configurable': false,
+            'writable': false,
+            'value': async function () {
+
+                turn_cnt = 0;
+                status = 'STARTED';
+
+                while (!this.isEnd) {
+                    const turn = new Turn(this);
+                    await turn.dealer.doTurn(turn);
+
+                    turn_cnt++;
+
+                    if (this.turn > max_turns) {
+                        status = 'FINISHED';
+                    }
+                }
+
+            },
+        },
     });
 
     //
@@ -37,17 +77,17 @@ const Game = function () {
             const Type = cell.unit.type;
             cell.unit = new Type();
             cell.owner = player;
+            units.push(cell.unit);
         }
     });
 };
 
 Object.defineProperties(Game.prototype,{
-    'start': {
+    'isEnd': {
         'enumerable': true,
         'configurable': false,
-        'writable': false,
-        'value': function () {
-
+        'get': function () {
+            return this.status === 'FINISHED';
         },
     },
 });

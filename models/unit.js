@@ -4,7 +4,7 @@ const name = 'Unit';
 const attr = ['name', 'type' ,'cost','move','vision','fuel','ammo','range','damage','environment'];
 
 EntityFactory.create(name,attr, function () {
-
+    this.id = this.type + '' + Math.floor(Math.random()*1000000);
 });
 
 const entitity = EntityFactory.entities[name];

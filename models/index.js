@@ -2,6 +2,7 @@ const Unit = require('./unit');
 const Terrain = require('./terrain');
 const Game = require('./game');
 const Map = require('./map');
+const Player = require('./player');
 
 const entities = require('../data/entities');
 
@@ -24,4 +25,5 @@ module.exports = {
     Unit,
     Map,
     Game,
+    Player,
 };
