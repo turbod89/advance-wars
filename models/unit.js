@@ -50,6 +50,21 @@ Object.defineProperties(entitity, {
                 },{})
             );
 
+            Object.defineProperties(
+                types[newTypeName],
+                {
+                    'str': {
+                        'enumerable': true,
+                        'configurable': false,
+                        'get': function () {
+                            let s = `
+${this.name} (${this.type})            
+            `;
+                        },
+                    },
+                }
+            );
+
             return this;
         }
     },
@@ -61,6 +76,7 @@ Object.defineProperties(entitity, {
             return types;
         },
     },
+
 });
 
 module.exports = entitity;

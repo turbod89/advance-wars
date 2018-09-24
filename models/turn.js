@@ -14,6 +14,8 @@ const Turn = function (game) {
 
     const dealer = game.players[ game.turn % game.players.length];
     const unitsWichHaveBeenAlreadyMoved = [];
+    const myUnits = [];
+    const units = [];
 
     const filteredCells = game.map.cells.map( (cell,i) => {
         const x = game.map.getCellCoordinates(cell);
@@ -23,6 +25,10 @@ const Turn = function (game) {
 
         if (cell.unit && cell.unit.owner === cell.unit.owner) {
             newCell.unit = cell.unit;
+            units.push(cell.unit);
+            if (cell.unit.owner === cell.unit.owner) {
+                myUnits.push(cell.unit);
+            }
         }
 
         return newCell;
@@ -67,6 +73,18 @@ const Turn = function (game) {
                 }
 
             },
+        },
+
+        'myUnits': {
+            'enumerable': true,
+            'configurable': false,
+            'get': () => myUnits,
+        },
+
+        'units': {
+            'enumerable': true,
+            'configurable': false,
+            'get': () => units,
         },
     })
 

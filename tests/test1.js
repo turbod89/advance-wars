@@ -44,6 +44,17 @@ const players = (new Array(mapData.teams)).fill(null).map( (e,i) => {
                         rl.pause();
                         resolve();
 
+                    } else if (isCmd(words[0],['units'])) {
+
+                        if ( words.length < 2 || isCmd(words[1],['show'])) {
+                            console.log(turn.myUnits);
+                            turn.myUnits.forEach( unit => {
+                                console.log(unit.str);
+                            });
+                        } else if (true) {
+                            console.log(turn.units)
+                        }
+
                     } else if (isCmd(words[0],['map', 'cells'])) {
 
                         if ( words.length < 2) {
@@ -83,6 +94,8 @@ const players = (new Array(mapData.teams)).fill(null).map( (e,i) => {
     -> map
         -> print
         -> log
+    -> units
+        -> show
 
 `);
                     } else if (true) {

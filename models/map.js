@@ -30,6 +30,18 @@ const Map = function () {
         },
     });
 
+    const map = this;
+
+    this.cells.forEach( (cell,index) => {
+        Object.defineProperties(cell, {
+            'coordinates': {
+                'enumerable': true,
+                'configurable': false,
+                'get': () => [ Math.floor(index / map.size[1]),  index % map.size[1]]
+            }
+        });
+    })
+
 };
 
 Object.defineProperties(Map.prototype,{
@@ -46,13 +58,18 @@ Object.defineProperties(Map.prototype,{
         'configurable': false,
         'writable': false,
         'value': function (targetCell) {
+
+            return typeof targetCell === 'number' ? this.cells[targetCell].coordinates : targetCell.coordinates;
+
+            /*
             const index = typeof targetCell === 'number' ?
                     targetCell
                  :
                     this.cells.findIndex(cell => cell === targetCell)
                 ;
 
-            return ( index < 0 || index >= this.size[0]*this.size[1] ) ? null : [ Math.floor(index / this.offset[0]),  index % this.offset[0]];
+            return ( index < 0 || index >= this.size[0]*this.size[1] ) ? null : [ Math.floor(index / this.size[0]),  index % this.size[0]];
+            */
         }
     },
     'getCell': {
@@ -73,6 +90,42 @@ Object.defineProperties(Map.prototype,{
             return this.cells[this.getCellIndex(i,j)];
         }
     },
+    'getUnitCellIndex': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit) {
+            const index = this.cells.findIndex(cell => cell.unit && (cell.unit === unit));
+            return index < 0 ? null : index;
+        },
+    },
+
+    'getAdjacent': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function * (cell) {
+            const coordinates = this.getCellCoordinates(cell);
+
+            if (coordinates[0] > 0) {
+                yield this.getCell(coordinates[0]-1,coordinates[1])
+            }
+
+            if (coordinates[0] < this.size[0] - 1) {
+                yield this.getCell(coordinates[0]+1,coordinates[1])
+            }
+
+            if (coordinates[1] > 0) {
+                yield this.getCell(coordinates[0],coordinates[1]-1)
+            }
+
+            if (coordinates[1] < this.size[1] - 1) {
+                yield this.getCell(coordinates[0],coordinates[1]+1)
+            }
+
+        },
+    },
+
     'build': {
         'enumerable': true,
         'configurable': false,
@@ -82,9 +135,13 @@ Object.defineProperties(Map.prototype,{
             const {terrains, units} = data;
 
             this.cells.forEach( cell => {
+                if ( !(cell.terrain in terrains)) {
+                    console.error(`Terrain type '${cell.terrain}' does not exists`);
+                    return;
+                }
                 cell.terrain = terrains[cell.terrain];
 
-                if (cell.unit !== null) {
+                if (cell.unit && cell.unit !== null) {
                     cell.unit.type = units[cell.unit.type];
                 }
             });
