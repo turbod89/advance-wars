@@ -186,7 +186,24 @@ Object.defineProperties(Map.prototype,{
         'enumerable': true,
         'configurable': false,
         'get': function () {
-            
+            return {
+                size: this.size,
+                offset: this.offset,
+                cells: this.cells.map( cell => {
+                   const cell_data = {
+                       terrain: cell.terrain.type,
+                   };
+
+                   if (cell.unit) {
+                       cell_data.unit = {
+                           owner: cell_data.unit.owner.name,
+                           unit: cell_data.unit.type,
+                       }
+                   }
+
+                   return cell_data;
+                }),
+            }
         },
     },
 

@@ -156,7 +156,7 @@ Object.defineProperties(Game.prototype,{
                 const cell = this.map.getCell(cellIndex);
                 return dijkstra(cell, unit.move, this.map, cell => {
 
-                    if (this.isValidUnitCell(unit,cell)) {
+                    if (!this.isValidUnitCell(unit,cell)) {
                         return null;
                     }
 
