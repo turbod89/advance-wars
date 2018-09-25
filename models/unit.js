@@ -5,6 +5,7 @@ const attr = ['name', 'type' ,'cost','move','vision','fuel','ammo','range','dama
 
 EntityFactory.create(name,attr, function () {
     this.id = this.type + '' + Math.floor(Math.random()*1000000);
+    this.hp = 1;
 });
 
 const entitity = EntityFactory.entities[name];

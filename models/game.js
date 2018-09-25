@@ -1,21 +1,29 @@
 const Turn = require('./turn');
 
 
-const dijkstra = function * (cell, remaining_moves, map, calcule_cost, already_visited = []) {
+const dijkstra = function (cell, remaining_moves, map, calcule_cost, already_visited = null) {
 
-    already_visited.push(cell);
-    const adjacent_cell_gen = map.getAdjacent(cell);
-    let adjacent_cell = adjacent_cell_gen.next();
-    while (! adjacent_cell.done) {
-        const cost =  calcule_cost(adjacent_cell.value);
-        const isCellAlreadyVisited = already_visited.some(cell => cell === adjacent_cell.value);
+    if (already_visited === null) {
+        already_visited = new Set();
+    }
+
+    already_visited.add(cell);
+
+    const adjacent_cells = map.getAdjacent(cell);
+
+    for (const adjacent_cell of adjacent_cells) {
+
+        const cost =  calcule_cost(adjacent_cell);
+        const isCellAlreadyVisited = already_visited.has(adjacent_cell);
+
         if (!isCellAlreadyVisited && typeof cost === 'number' && cost <= remaining_moves) {
-            yield adjacent_cell.value;
-            yield* dijkstra(adjacent_cell.value, remaining_moves - cost,map,calcule_cost, already_visited);
+            already_visited.add( adjacent_cell );
+            dijkstra(adjacent_cell, remaining_moves - cost,map,calcule_cost, already_visited);
         }
 
-        adjacent_cell = adjacent_cell_gen.next();
     }
+
+    return already_visited;
 };
 
 const Game = function () {
@@ -126,20 +134,37 @@ Object.defineProperties(Game.prototype,{
         }
     },
 
+    'isValidUnitCell': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit, cell) {
+            return cell.terrain.cost[unit.type] !== null && !(cell.unit && cell.unit.owner !== unit.owner);
+        },
+    },
+
     'getUnitReachableCells': {
         'enumerable': true,
         'configurable': false,
         'writable': false,
-        'value': function * (unit) {
+        'value': function (unit) {
             const cellIndex = this.map.getUnitCellIndex(unit);
 
             if (cellIndex === null) {
 
             } else {
                 const cell = this.map.getCell(cellIndex);
-                yield* dijkstra(cell, unit.move, this.map, cell => cell.terrain.cost[unit.type]);
+                return dijkstra(cell, unit.move, this.map, cell => {
+
+                    if (this.isValidUnitCell(unit,cell)) {
+                        return null;
+                    }
+
+                    return cell.terrain.cost[unit.type];
+                });
             }
 
+            return new Set();
         }
     },
 
@@ -147,16 +172,43 @@ Object.defineProperties(Game.prototype,{
         'enumerable': true,
         'configurable': false,
         'writable': false,
-        'value': function * (unit) {
+        'value': function (unit) {
             const cellIndex = this.map.getUnitCellIndex(unit);
 
             if (cellIndex === null) {
 
             } else {
                 const cell = this.map.getCell(cellIndex);
-                yield* dijkstra(cell, unit.vision, this.map, cell => cell.terrain.visibility[unit.type]);
+                return dijkstra(cell, unit.vision, this.map, cell => cell.terrain.visibility[unit.type]);
             }
 
+            return new Set();
+        }
+    },
+
+    'getUnitAPrioryReachableCells': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit) {
+            const cellIndex = this.map.getUnitCellIndex(unit);
+
+            if (cellIndex === null) {
+
+            } else {
+                const visible_cells = this.getUnitVisibleCells(unit);
+                const cell = this.map.getCell(cellIndex);
+                return dijkstra(cell, unit.move, this.map, cell => {
+
+                    if (visible_cells.has(cell) && this.isValidUnitCell(unit,cell)) {
+                        return null;
+                    }
+
+                    return cell.terrain.cost[unit.type];
+                });
+            }
+
+            return new Set();
         }
     },
 
@@ -164,21 +216,119 @@ Object.defineProperties(Game.prototype,{
         'enumerable': true,
         'configurable': false,
         'writable': false,
-        'value': function * (player) {
+        'value': function (player) {
 
-            const visited_cells = [];
+            const visited_cells = new Set();
+
             for (let unit of this.units) {
                 if (unit.owner === player) {
-                    const visible_cells_gen = this.getUnitVisibleCells(unit);
-                    for (let cell of visible_cells_gen) {
-                        const already_visited = visited_cells.some(visited_cell => visited_cell === cell);
+
+                    const visible_cells = this.getUnitVisibleCells(unit);
+
+                    for (let cell of visible_cells) {
+
+                        const already_visited = visited_cells.has(cell);
                         if (!already_visited) {
-                            visited_cells.push(cell);
-                            yield cell;
+                            visited_cells.add(cell);
                         }
                     }
                 }
             }
+
+            return visited_cells;
+        }
+    },
+
+    'move': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit, targetCell) {
+
+            const actualCell = this.map.getUnitCell(unit);
+            targetCell.unit = actualCell.unit;
+            actualCell.unit = null;
+
+            return this;
+        }
+    },
+
+    'attack': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (attacker, defender, counterAttack = false) {
+
+            if ( !(defender.type in attacker.damage) || attacker.damage[defender.type] === null) {
+                // attacker is not allow to attack defender
+                return this;
+            }
+
+            const attackerOffensive = 1;
+            const defenderDefense = 1;
+            const defenderCell = this.map.getUnitCell(defender);
+            const R = 0.1 * Math.random();
+            const damage = Math.max( 0, Math.min(1,
+                (attacker.damage[defender.type] * attackerOffensive + R)
+                * attacker.hp
+                * ( 1 - defenderDefense + 1 - defenderCell.terrain.defense[defender.type] * defender.hp)
+            ));
+
+            defender.hp -= damage;
+
+            if (counterAttack === false && defender.hp > 0 ) {
+                this.attack(defender, attacker, true);
+            }
+
+            if (defender.hp <= 0) {
+                defenderCell.unit = null;
+                delete defender;
+            }
+
+            return this;
+        }
+    },
+
+    'travelThroughRoute': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit, route) {
+
+            const cellIndex = this.map.getUnitCellIndex(unit);
+
+            if (cellIndex === null) {
+                let actual_cell = this.map.getCell(cellIndex);
+                let avaliable_move = this.unit.move;
+
+                for (const direction of route) {
+                    const cell = this.map.go(actual_cell,direction);
+
+                    const reachable = cell === null
+                        || !this.isValidUnitCell(unit,cell)
+                        || avaliable_move < cell.terrain.cost[unit.type];
+
+                    if ( ! reachable) {
+                        return {
+                            valid: false,
+                            cell: actual_cell,
+                        };
+                    }
+
+                    avaliable_move -= cell.terrain.cost[unit.type];
+                    actual_cell = cell;
+                }
+
+                return {
+                    valid: true,
+                    cell: actual_cell,
+                };
+
+            } else {
+
+            }
+
+            return null;
         }
     },
 

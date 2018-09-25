@@ -44,6 +44,19 @@ const Map = function () {
 
 };
 
+Object.defineProperties(Map, {
+    'directions': {
+        'enumerable': true,
+        'configurable': false,
+        'get': () => ({
+            'north': 0,
+            'east': 1,
+            'south': 2,
+            'west': 3,
+        })
+    }
+})
+
 Object.defineProperties(Map.prototype,{
     'getCellIndex': {
         'enumerable': true,
@@ -100,28 +113,71 @@ Object.defineProperties(Map.prototype,{
         },
     },
 
+    'getUnitCell': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (unit) {
+            const index = this.getUnitCellIndex(unit);
+            return index === null ? null : this.cells[index];
+        },
+    },
+
     'getAdjacent': {
         'enumerable': true,
         'configurable': false,
         'writable': false,
-        'value': function * (cell) {
+        'value': function (cell) {
             const coordinates = this.getCellCoordinates(cell);
 
+            const cells = new Set();
+
             if (coordinates[0] > 0) {
-                yield this.getCell(coordinates[0]-1,coordinates[1])
+                cells.add( this.getCell(coordinates[0]-1,coordinates[1]) );
             }
 
             if (coordinates[0] < this.size[0] - 1) {
-                yield this.getCell(coordinates[0]+1,coordinates[1])
+                cells.add( this.getCell(coordinates[0]+1,coordinates[1]) );
             }
 
             if (coordinates[1] > 0) {
-                yield this.getCell(coordinates[0],coordinates[1]-1)
+                cells.add( this.getCell(coordinates[0],coordinates[1]-1) );
             }
 
             if (coordinates[1] < this.size[1] - 1) {
-                yield this.getCell(coordinates[0],coordinates[1]+1)
+                cells.add( this.getCell(coordinates[0],coordinates[1]+1) );
             }
+
+
+            return cells;
+
+        },
+    },
+
+    'go': {
+        'enumerable': true,
+        'configurable': false,
+        'writable': false,
+        'value': function (cell, direction) {
+            const coordinates = this.getCellCoordinates(cell);
+
+            if (Map.directions.north === direction && coordinates[0] > 0) {
+                return this.getCell(coordinates[0]-1,coordinates[1]);
+            }
+
+            if (Map.directions.south === direction < this.size[0] - 1) {
+                return this.getCell(coordinates[0]+1,coordinates[1]);
+            }
+
+            if (Map.directions.west === direction && coordinates[1] > 0) {
+                return this.getCell(coordinates[0],coordinates[1]-1);
+            }
+
+            if (Map.directions.east === direction && coordinates[1] < this.size[1] - 1) {
+                return this.getCell(coordinates[0],coordinates[1]+1);
+            }
+
+            return null;
 
         },
     },

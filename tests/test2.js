@@ -1,4 +1,5 @@
 const readline = require('readline');
+const printer = require('./printer');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -8,7 +9,7 @@ const rl = readline.createInterface({
 
 
 const { Unit, Terrain, Game, Map, Player} = require('../models');
-const mapData = require('../data/map2');
+const mapData = require('../data/map1');
 
 const map = new Map(mapData);
 map.build({
@@ -31,33 +32,19 @@ const game = new Game({
     map,
 });
 
-let s = '';
 
-for (let i = 0; i < map.size[0]; i++) {
-    for (let j = 0; j < map.size[1]; j++) {
-
-        const cell = map.getCell(i,j);
-
-        if (cell.unit) {
-            s += '!';
-        } else {
-            s += '.';
-        }
-    }
-    s +='\n';
-}
-
-console.log('\n'+s+'\n');
-
+printer(map);
 const unit = game.units[0];
-const gen = game.getUnitReachableCells(unit);
-let cell = gen.next();
-while(!cell.done) {
-    console.log(game.map.getCellCoordinates(cell.value));
-    cell = gen.next();
+const reachable_cells = game.getUnitReachableCells(unit);
+for (const cell of reachable_cells) {
+    console.log(cell.coordinates);
 }
+printer(map,{only: reachable_cells});
+
 
 const player = players[0];
 
-const visible_cells_gen = game.getPlayerVisibleCells(player);
-console.log([...visible_cells_gen].map(cell => cell.coordinates));
+const visible_cells = game.getPlayerVisibleCells(player);
+for (const cell of visible_cells) {
+    console.log(cell.coordinates);
+}

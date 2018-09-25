@@ -1,17 +1,10 @@
-/*
-const readline = require('readline');
 const fs = require('fs');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    //input: fs.createReadStream('./data/map2.scheme.js'),
-    output: process.stdout,
-    prompt: '',
-    crlfDelay: Infinity,
-});
-*/
 const createJson = function (data) {
-    const {size,charMap,charUnits,units} = data;
+    const {size,units} = data;
+    const charMap = data.charMap.replace(/\n/g,'');
+    const charUnits = data.charUnits.replace(/\n/g,'');
+
     const cells = [];
     for (let i =0; i < size[0]; i++) {
         for (let j = 0; j < size[1]; j++) {
@@ -27,9 +20,17 @@ const createJson = function (data) {
                 cells.push({
                     terrain: 'Wood',
                 })
+            } else if (charMap[ i * size[1] + j] === 'M') {
+                cells.push({
+                    terrain: 'Mountain',
+                })
             } else if (charMap[ i * size[1] + j] === '=') {
                 cells.push({
                     terrain: 'Road',
+                })
+            } else if (charMap[ i * size[1] + j] === '%') {
+                cells.push({
+                    terrain: 'Bridge',
                 })
             } else {
                 cells.push({
@@ -61,36 +62,22 @@ const createJson = function (data) {
     };
 };
 
-const data = require('../data/map2.scheme');
-console.log(JSON.stringify(createJson(data)));
+//const data = require('../data/map2.scheme');
+//console.log(JSON.stringify(createJson(data)));
 
-/*
-rl.resume();
+const folder = './data/';
+const files = fs.readdirSync(folder);
+files.forEach (file => {
+   if (/map\d+\.scheme\.js/.test(file)) {
+       targetFilename = file.replace(/(map\d+)\.scheme.+/,'$1.json');
+       const data = require('../data/' + file);
+       fs.writeFileSync(folder + targetFilename, JSON.stringify(createJson(data)), err => {
+           if (err) {
+               console.error(`Error writing file '${targetFilename}':`,err);
+           } else {
+               console.log(`Succesfully written file '${targetFilename}.`);
+           }
 
-rl.prompt();
-
-const charMap = [];
-const size = [];
-let lines = 0;
-
-rl.on('line', (line) => {
-    const words = line.trim().split(' ');
-    for (let word of words) {
-        if (size.length < 2 && isNaN(word) === false) {
-            size.push(Number(word));
-        } else if ( size.length >= 2) {
-            charMap.push(word);
-            lines++;
-            if (lines >= size[1]) {
-                console.log(JSON.stringify(createJson(size,charMap)));
-                rl.close();
-            }
-        }
-    }
-
-    rl.prompt();
-}).on('close', () => {
-    console.log('Have a great day!');
-    process.exit(0);
+       });
+   }
 });
-*/
