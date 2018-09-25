@@ -182,6 +182,14 @@ Object.defineProperties(Map.prototype,{
         },
     },
 
+    'json': {
+        'enumerable': true,
+        'configurable': false,
+        'get': function () {
+            
+        },
+    },
+
     'build': {
         'enumerable': true,
         'configurable': false,
