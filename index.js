@@ -41,12 +41,24 @@ server.on('connection', socket => {
         playersByClient.get(socket).name = new_name;
     });
 
+    socket.no('set party', data => {
+        const {name = null, map_name = null, } = data;
+        if (!mapFiles.has(map_name)) {
+            socket.emit('onError',`Map ${map_name} does not exists.`);
+        } else if (name === null || !([...games].map(game => game.name).some(game_name => game_name === name))) {
+
+        }
+    });
+
     socket.on('get map files', () => {
         socket.emit('get map files', [...mapFiles]);
     });
 
     socket.on('get parties', () => {
-        socket.emit('get parties', [...games]);
+        socket.emit('get parties', [...games].map( game => ({
+            name: game.name,
+            owner: game.owner.name,
+        })));
     });
 
     socket.on('get map', map_name => {
