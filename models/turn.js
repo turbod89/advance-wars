@@ -13,7 +13,7 @@ const Map = require('./map');
 const Turn = function (game) {
 
     const dealer = game.players[ game.turn % game.players.length];
-    const unitsWichHaveBeenAlreadyMoved = [];
+    const unitsWichHaveBeenAlreadyMoved = new Set();
     const myUnits = [];
     const units = [];
 
@@ -65,7 +65,7 @@ const Turn = function (game) {
             'writable': false,
             'value': function (targetUnit, cell) {
 
-                const alreadyMoved = unitsWichHaveBeenAlreadyMoved.some( unit => unit === targetUnit);
+                const alreadyMoved = unitsWichHaveBeenAlreadyMoved.has( targetUnit);
 
                 if (alreadyMoved) {
                     console.error('This unit has been already moved this turn');
