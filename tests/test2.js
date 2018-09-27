@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 
 
 const { Unit, Terrain, Game, Map, Player} = require('../models');
-const mapData = require('../data/map1');
+const mapData = require('../data/map2');
 
 const map = new Map(mapData);
 map.build({

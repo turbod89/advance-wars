@@ -2,36 +2,107 @@ const clc = require("cli-color");
 
 const tiles = [
     {
-        size: [2,2],
+        size: [2,3],
         terrains: {
             "Plain": {
                 chars: [
-                    clc.xterm(46).bgXterm(22)('.'),
-                    clc.xterm(46).bgXterm(22)(' '),
-                    clc.xterm(46).bgXterm(22)(' '),
-                    clc.xterm(46).bgXterm(22)('.')
+                    clc.xterm(46).bgXterm(70)('`'),
+                    clc.xterm(46).bgXterm(70)(' '),
+                    clc.xterm(46).bgXterm(70)('.'),
+                    clc.xterm(46).bgXterm(70)(' '),
+                    clc.xterm(46).bgXterm(70)(','),
+                    clc.xterm(46).bgXterm(70)(' ')
+                ],
+                highlightChars: [
+                    clc.xterm(46).bgXterm(124)('`'),
+                    clc.xterm(46).bgXterm(124)(' '),
+                    clc.xterm(46).bgXterm(124)('.'),
+                    clc.xterm(46).bgXterm(124)(' '),
+                    clc.xterm(46).bgXterm(124)(','),
+                    clc.xterm(46).bgXterm(124)(' ')
                 ],
             },
             "River": {
-                chars: '-~~-',
+                chars: [
+                    clc.xterm(39).bgXterm(18)('-'),
+                    clc.xterm(39).bgXterm(18)('~'),
+                    clc.xterm(39).bgXterm(18)('~'),
+                    clc.xterm(39).bgXterm(18)('~'),
+                    clc.xterm(39).bgXterm(18)('~'),
+                    clc.xterm(39).bgXterm(18)('-')
+                ],
+                highlightChars: [
+                    clc.xterm(39).bgXterm(124)('-'),
+                    clc.xterm(39).bgXterm(124)('~'),
+                    clc.xterm(39).bgXterm(124)('~'),
+                    clc.xterm(39).bgXterm(124)('~'),
+                    clc.xterm(39).bgXterm(124)('~'),
+                    clc.xterm(39).bgXterm(124)('-')
+                ],
             },
             "Bridge": {
-                chars: '==II',
+                chars: [
+                    clc.xterm(94).bgXterm(8)('='),
+                    clc.xterm(94).bgXterm(8)('='),
+                    clc.xterm(94).bgXterm(8)('='),
+                    clc.xterm(94).bgXterm(8)('I'),
+                    clc.xterm(94).bgXterm(8)(' '),
+                    clc.xterm(94).bgXterm(8)('I')
+                ],
+                highlightChars: [
+                    clc.xterm(94).bgXterm(124)('='),
+                    clc.xterm(94).bgXterm(124)('='),
+                    clc.xterm(94).bgXterm(124)('='),
+                    clc.xterm(94).bgXterm(124)('I'),
+                    clc.xterm(94).bgXterm(124)(' '),
+                    clc.xterm(94).bgXterm(124)('I')
+                ],
             },
             "Road": {
-                chars: '++++',
+                chars: [
+                    clc.xterm(0).bgXterm(8)('+'),
+                    clc.xterm(0).bgXterm(8)('+'),
+                    clc.xterm(0).bgXterm(8)('+'),
+                    clc.xterm(0).bgXterm(8)('+'),
+                    clc.xterm(0).bgXterm(8)('+'),
+                    clc.xterm(0).bgXterm(8)('+')
+                ],
+                highlightChars: [
+                    clc.xterm(0).bgXterm(124)('+'),
+                    clc.xterm(0).bgXterm(124)('+'),
+                    clc.xterm(0).bgXterm(124)('+'),
+                    clc.xterm(0).bgXterm(124)('+'),
+                    clc.xterm(0).bgXterm(124)('+'),
+                    clc.xterm(0).bgXterm(124)('+')
+                ],
             },
             "Wood": {
-                chars: '&&&&',
+                chars: [
+                    clc.xterm(94).bgXterm(58)('&'),
+                    clc.xterm(94).bgXterm(58)('&'),
+                    clc.xterm(94).bgXterm(58)('&'),
+                    clc.xterm(94).bgXterm(58)('&'),
+                    clc.xterm(94).bgXterm(58)('&'),
+                    clc.xterm(94).bgXterm(58)('&')
+                ],
+                highlightChars: [
+                    clc.xterm(94).bgXterm(124)('&'),
+                    clc.xterm(94).bgXterm(124)('&'),
+                    clc.xterm(94).bgXterm(124)('&'),
+                    clc.xterm(94).bgXterm(124)('&'),
+                    clc.xterm(94).bgXterm(124)('&'),
+                    clc.xterm(94).bgXterm(124)('&')
+                ],
             },
             "Mountain": {
-                chars: 'M^^M',
+                chars: 'M^  ^M',
             },
             "Sea": {
-                chars: 's  s',
+                chars: 's    s',
             },
         },
-    }
+    },
+
 ];
 
 module.exports = function (map, opt = {}) {
@@ -44,10 +115,11 @@ module.exports = function (map, opt = {}) {
             for (let j = 0; j < map.size[1]; j++) {
                 const cell = map.cells ? map.cells[i * map.size[1] + j] : map[i * map.size[1] + j];
                 for (let x = 0; x < tileSet.size[1]; x++) {
-                    if ( opt['only'] && !opt['only'].has(cell)) {
-                        s += ' ';
+                    const tile = tileSet.terrains[cell.terrain.type || cell.terrain];
+                    if ( opt['only'] && opt['only'].has(cell) && ('highlightChars' in tile)) {
+                        s += tile.highlightChars[y * tileSet.size[1] + x];
                     } else {
-                        s += tileSet.terrains[cell.terrain.type || cell.terrain].chars[y * tileSet.size[1] + x]
+                        s += tile.chars[y * tileSet.size[1] + x]
                     }
                 }
             }
