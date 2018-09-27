@@ -6,10 +6,10 @@ const tiles = [
         terrains: {
             "Plain": {
                 chars: [
-                    clc.xterm(202).bgXterm(236)('.'),
-                    clc.xterm(202).bgXterm(236)(' '),
-                    clc.xterm(202).bgXterm(236)(' '),
-                    clc.xterm(202).bgXterm(236)('.')
+                    clc.xterm(46).bgXterm(22)('.'),
+                    clc.xterm(46).bgXterm(22)(' '),
+                    clc.xterm(46).bgXterm(22)(' '),
+                    clc.xterm(46).bgXterm(22)('.')
                 ],
             },
             "River": {
