@@ -4,6 +4,12 @@ const Map = function () {
     const $a = args[0] || {};
 
     Object.defineProperties(this,{
+        'teams': {
+            'enumerable': true,
+            'configurable': false,
+            'writable': false,
+            'value': $a['teams'] || 2,
+        },
         'size': {
             'enumerable': true,
             'configurable': false,
@@ -187,6 +193,7 @@ Object.defineProperties(Map.prototype,{
         'configurable': false,
         'get': function () {
             return {
+                teams: this.teams,
                 size: this.size,
                 offset: this.offset,
                 cells: this.cells.map( cell => {

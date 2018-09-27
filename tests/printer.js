@@ -1,14 +1,35 @@
+const clc = require("cli-color");
+
 const tiles = [
     {
         size: [2,2],
         terrains: {
-            "Plain": '.  .',
-            "River": '-~~-',
-            "Bridge": '==II',
-            "Road": '++++',
-            "Wood": '&&&&',
-            "Mountain": 'M^^M',
-            "Sea": 's  s',
+            "Plain": {
+                chars: [
+                    clc.xterm(202).bgXterm(236)('.'),
+                    clc.xterm(202).bgXterm(236)(' '),
+                    clc.xterm(202).bgXterm(236)(' '),
+                    clc.xterm(202).bgXterm(236)('.')
+                ],
+            },
+            "River": {
+                chars: '-~~-',
+            },
+            "Bridge": {
+                chars: '==II',
+            },
+            "Road": {
+                chars: '++++',
+            },
+            "Wood": {
+                chars: '&&&&',
+            },
+            "Mountain": {
+                chars: 'M^^M',
+            },
+            "Sea": {
+                chars: 's  s',
+            },
         },
     }
 ];
@@ -26,7 +47,7 @@ module.exports = function (map, opt = {}) {
                     if ( opt['only'] && !opt['only'].has(cell)) {
                         s += ' ';
                     } else {
-                        s += tileSet.terrains[cell.terrain.type || cell.terrain][y * tileSet.size[1] + x]
+                        s += tileSet.terrains[cell.terrain.type || cell.terrain].chars[y * tileSet.size[1] + x]
                     }
                 }
             }

@@ -7,7 +7,11 @@ const printer = require('./tests/printer');
 
 ioClient.on('onError', msg => console.error(msg));
 ioClient.on('get map files', msg => console.log(msg));
-ioClient.on('get parties', msg => console.log(msg));
+ioClient.on('get parties', partiesData => {
+    partiesData.forEach( partyData => {
+        console.log(`*${partyData.name}* in map '${ partyData.map }' created by ${partyData.owner} ( ${partyData.players.length} )`);
+    })
+});
 
 ioClient.on('get map', mapData => {
     printer(mapData);
@@ -15,7 +19,8 @@ ioClient.on('get map', mapData => {
 
 const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
+    prompt: '',
 });
 
 const ask = async function () {
@@ -43,7 +48,15 @@ const ask = async function () {
                 } else if (isCmd(words[0],['set'])) {
 
                     if ( words.length < 2) {
-                        console.error('set what?');
+                        console.error('set party | name');
+                    } else if (isCmd(words[1],['party'])) {
+
+                        if ( words.length < 4) {
+                            console.error('set party <new-party-name> <map>');
+                        } else {
+                            ioClient.emit('set party', {name: words[2], map_name: words[3]});
+                        }
+
                     } else if (isCmd(words[1],['name'])) {
 
                         if ( words.length < 3) {
