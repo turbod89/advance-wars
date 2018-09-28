@@ -95,7 +95,22 @@ const tiles = [
                 ],
             },
             "Mountain": {
-                chars: 'M^  ^M',
+                chars: [
+                    clc.xterm(58).bgXterm(94)('M'),
+                    clc.xterm(58).bgXterm(94)('^'),
+                    clc.xterm(58).bgXterm(94)(' '),
+                    clc.xterm(58).bgXterm(94)(' '),
+                    clc.xterm(58).bgXterm(94)('^'),
+                    clc.xterm(58).bgXterm(94)('M')
+                ],
+                highlightChars: [
+                    clc.xterm(58).bgXterm(124)('M'),
+                    clc.xterm(58).bgXterm(124)('^'),
+                    clc.xterm(58).bgXterm(124)(' '),
+                    clc.xterm(58).bgXterm(124)(' '),
+                    clc.xterm(58).bgXterm(124)('^'),
+                    clc.xterm(58).bgXterm(124)('M')
+                ],
             },
             "Sea": {
                 chars: 's    s',

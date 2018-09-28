@@ -64,7 +64,7 @@ server.on('connection', socket => {
 
             game.name = name;
             game.owner = playersByClient.get(socket);
-            game.map_name = map_name
+            game.map_name = map_name;
 
             games.add(game);
         }
