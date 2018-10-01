@@ -1,7 +1,7 @@
 module.exports = {
     "style": {
         "fg": "white",
-        "bg": "transparent",
+        "bg": "black",
     },
     "border": {
         "type": "line"

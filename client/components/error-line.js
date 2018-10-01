@@ -1,12 +1,12 @@
 const blessed = require('blessed');
 const { style, border} = require('../styles/main');
 
-const ErrorLine = function (ioClient) {
+const ErrorLine = function ($scope) {
 
     const errorLine = blessed.box({
         orientation: 'horizontal',
         align: 'left',
-        label: '',
+        label: 'Error Line',
         bottom: 0,
         left: 0,
         height: 3,
@@ -15,7 +15,7 @@ const ErrorLine = function (ioClient) {
         style,
     });
 
-    ioClient.on('onError', msg => {
+    $scope.ioClient.on('onError', msg => {
         errorLine.setText(msg);
     });
 
