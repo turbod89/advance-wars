@@ -1,14 +1,8 @@
 const Player = function () {
-
+    this.name = 'Player_'+Math.floor(Math.random()*100000);
 };
 
 Object.defineProperties(Player.prototype, {
-    'name': {
-        'enumerable': true,
-        'modificable': false,
-        'writable': true,
-        'value': 'Player_'+Math.floor(Math.random()*100000),
-    },
 
 
     'doTurn': {

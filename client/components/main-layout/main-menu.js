@@ -1,5 +1,5 @@
 const blessed = require('blessed');
-const { style, border} = require('../styles/main');
+const { style, border} = require('../../styles/main');
 
 const MainMenu = function ($scope) {
 
@@ -10,18 +10,13 @@ const MainMenu = function ($scope) {
         label: 'Main menu',
         top: 0,
         left: 'right',
-        bottom: 3,
-        width: '20%',
+        bottom: 0,
+        width: '100%',
         // height: items.length + 2,
-        align: 'left',
+        align: 'center',
         keys: true,
         border,
-        style: {
-            ...style,
-            selected: {
-                fg: 'red',
-            }
-        },
+        style,
     });
 
     $scope.focus.mainMenu = () => {
@@ -86,6 +81,10 @@ const MainMenu = function ($scope) {
                 },
                 {
                     'label': 'List parties',
+                    'select': () => {
+                        optionsList.hide();
+                        $scope.focus.partyList();
+                    },
                 },
                 {
                     'label': 'Change name',
@@ -106,6 +105,12 @@ const MainMenu = function ($scope) {
             ],
         },
     ]);
+
+
+    optionsList.key(['escape', 'q'], (ch,key) => {
+        $scope.quit();
+    });
+
 
     return optionsList;
 };

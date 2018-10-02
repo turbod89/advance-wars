@@ -29,6 +29,9 @@ server.on('connection', socket => {
         console.info(`Client gone [id=${socket.id}]`);
     });
 
+    socket.on('whoiam', () => {
+        socket.emit('whoiam', playersByClient.get(socket).name);
+    });
 
     socket.on('set name', new_name => {
         for (const [actual_socket, player] of playersByClient.entries()) {

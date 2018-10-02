@@ -1,5 +1,5 @@
 const blessed = require('blessed');
-const { style, border} = require('../styles/main');
+const { style, border} = require('../../styles/main');
 
 const MapList = function ($scope) {
 
@@ -10,18 +10,12 @@ const MapList = function ($scope) {
         label: 'Maps',
         top: 0,
         left: 0,
-        bottom: 3,
-        width: '20%',
-        // height: items.length + 2,
-        align: 'left',
+        bottom: 0,
+        width: '100%',
+        align: 'center',
         keys: true,
         border,
-        style: {
-            ...style,
-            selected: {
-                fg: 'red',
-            }
-        },
+        style,
     });
 
     $scope.focus.mapList = () => {
@@ -46,6 +40,7 @@ const MapList = function ($scope) {
             return {
                 'label': mapFile,
                 'select': () => {
+                    list.hide();
                     $scope.focus.mapDisplay(mapFile);
                 }
             }

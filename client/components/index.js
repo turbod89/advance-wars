@@ -1,11 +1,9 @@
 const ErrorLine = require('./error-line');
-const MainMenu = require('./main-menu');
-const MapList = require('./map-list');
-const MapDisplay = require('./map-display');
+const InfoLine = require('./info-line');
+const MainLayout = require('./main-layout');
 
 module.exports = {
+    MainLayout,
+    InfoLine,
     ErrorLine,
-    MainMenu,
-    MapList,
-    MapDisplay,
 };
