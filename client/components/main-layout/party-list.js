@@ -42,14 +42,8 @@ const PartyList = function ($scope) {
 
 
     $scope.ioClient.on('get parties', function (partiesData) {
-        const parsed = partiesData.map(partyData => {
-            return {
-                'label':`${partyData.name} at ${partyData.map} by @${partyData.owner}`,
-                'select': () => {
-                    $scope.focus.mapDisplay(partyData);
-                }
-            }
-        });
+
+        const parsed = [];
 
         parsed.push({
             'label': 'New',
@@ -59,6 +53,17 @@ const PartyList = function ($scope) {
                 $scope.refresh();
             },
         });
+
+
+        partiesData.forEach(partyData => {
+            parsed.push({
+                'label':`${partyData.name} at ${partyData.map} by @${partyData.owner}`,
+                'select': () => {
+                    $scope.focus.mapDisplay(partyData);
+                }
+            });
+        });
+
 
         parsed.push({
             'label': 'Back',

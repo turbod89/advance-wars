@@ -16,12 +16,8 @@ const CreatePartyForm = function ($scope) {
         align: 'center',
         keys: true,
         border,
-        style: {
-            ...style,
-            selected: {
-                fg: 'red',
-            }
-        },
+        style,
+        selectedBg: 'red',
     });
 
     $scope.focus.createPartyForm = () => {
@@ -37,12 +33,53 @@ const CreatePartyForm = function ($scope) {
         $scope.focus.partyList();
     });
 
-    const nameInput = blessed.text({
+    const nameInput = blessed.textbox({
         keys: true,
         label: 'Party\'s name',
+        height: 3,
+        left: 0,
+        right: 0,
+        border,
+        style,
     });
 
     form.append(nameInput);
+
+    const submitBtn = blessed.button({
+        keys: true,
+        content: 'Create!',
+        height: 3,
+        bottom: 3,
+        left: 2,
+        width: 8,
+        border,
+        //style,
+    });
+
+    submitBtn.on('press', () => {
+       form.hide();
+       $scope.focus.partyList();
+    });
+
+    form.append(submitBtn);
+
+    const cancelBtn = blessed.button({
+        keys: true,
+        content: 'Cancel',
+        height: 3,
+        bottom: 3,
+        right: 2,
+        width: 8,
+        border,
+        //style,
+    });
+
+    cancelBtn.on('press', () => {
+        form.hide();
+        $scope.focus.partyList();
+    });
+
+    form.append(cancelBtn);
 
     return form;
 };
