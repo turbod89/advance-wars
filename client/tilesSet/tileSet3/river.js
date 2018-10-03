@@ -6,25 +6,21 @@ const Tile = {
             [
                 [
                     '{#ffffff-fg}{#387593-bg}~',
-                    '-',
                 ],
             ],
             [
                 [
                     '{#ffffff-fg}{#387593-bg}-',
-                    ' ',
                 ],
             ],
             [
                 [
                     '{#ffffff-fg}{#387593-bg} ',
-                    '-'
                 ],
             ],
             [
                 [
-                    '{#ffffff-fg}{#387593-bg}~',
-                    ' ',
+                    '{#ffffff-fg}{#387593-bg}-',
                 ],
             ],
         ],
@@ -36,26 +32,22 @@ const Tile = {
             [
                 [
                     '{#ffffff-fg}{#50abd8-bg}~',
-                    '-',
                 ],
 
             ],
             [
                 [
                     '{#ffffff-fg}{#50abd8-bg}-',
-                    ' ',
                 ],
             ],
             [
                 [
-                    '{#ffffff-fg}{#50abd8-bg} ',
-                    '-',
+                    '{#ffffff-fg}{#50abd8-bg}~',
                 ],
             ],
             [
                 [
                     '{#ffffff-fg}{#50abd8-bg}-',
-                    ' ',
                 ],
             ],
         ],

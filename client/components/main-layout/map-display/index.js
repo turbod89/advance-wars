@@ -111,9 +111,9 @@ const MapDisplay = function ($scope) {
                         const tileName = cell.terrain.type || cell.terrain;
                         const tile = tileSet.terrains[tileName] || tileSet.terrains['Unknown'];
                         if ( cursor[0] === i && cursor[1] === j && ('cursor' in tile)) {
-                            line += tile.cursor.chars[this.frameCounter % tile.cursor.frames][y][x];
+                            line += tile.cursor.chars[Math.floor(this.frameCounter  / (tile.cursor.frameRate || this.frameRate) * this.frameRate) % tile.cursor.frames][y][x];
                         } else {
-                            line += tile.neutral.chars[this.frameCounter % tile.neutral.frames][y][x];
+                            line += tile.neutral.chars[Math.floor(this.frameCounter / (tile.neutral.frameRate || this.frameRate) * this.frameRate) % tile.neutral.frames][y][x];
                         }
                     }
                 }
